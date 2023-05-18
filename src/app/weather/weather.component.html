@@ -1,0 +1,50 @@
+<div class="container-fluid">
+  <div class="form m-5">
+    <form [formGroup] = 'searchForm' (ngSubmit) = "search()">
+        <div class="input-group mb-3">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Search city"
+              aria-label="city"
+              formControlName="city"
+              name="city"
+              />
+            <button
+              class="btn btn-outline-primary"
+              type="submit"
+            >
+              Search 
+            </button>
+          </div>
+    </form>
+  </div>
+  <div class="row results" *ngIf="weatherData">
+    <div class="col-3 list p-2">
+        <div class="card" *ngFor="let city of cityArray; let i = index">
+            <div class="card-body city-list">
+              <a href="#" class="card-link">{{city}}</a>
+              <img src="assets/images/trash.svg" class="trash-icon" (click)="removeCity(city)" />
+            </div>
+          </div>
+    </div>
+    <div class="col-9 content">
+
+      <div class="card text-white bg-primary m-4 main-block">
+        <div class="card-header text-center">
+          <h2>{{weatherData.name}}</h2>
+          <h6>{{weatherData.main.temp}} °C</h6>
+          <p><img src="https://openweathermap.org/img/wn/{{weatherData.weather[0].icon}}@2x.png" alt="weather image"/></p>
+        </div>
+
+        <div class="weather-data">
+            <p>Feels like: {{weatherData.main.feels_like}} °C</p>
+            <p>Pressure: {{weatherData.main.pressure}}</p>
+            <p >Humidity: {{weatherData.main.humidity}} %</p>
+            <p>Visibility: {{weatherData.visibility}} m</p>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
