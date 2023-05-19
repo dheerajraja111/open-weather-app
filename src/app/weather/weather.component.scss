@@ -29,3 +29,13 @@
 .content {
     border-left: 2px solid lightgray;
 }
+
+.invalid-data {
+    color: red;
+}
+
+.city-link {
+    cursor: pointer;
+    text-decoration: underline;
+    color: blue;
+}

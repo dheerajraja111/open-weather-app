@@ -1,4 +1,5 @@
 <div class="container-fluid">
+    <h2 class="text-center p-2">Weather details</h2>
   <div class="form m-5">
     <form [formGroup] = 'searchForm' (ngSubmit) = "search()">
         <div class="input-group mb-3">
@@ -11,25 +12,25 @@
               name="city"
               />
             <button
-              class="btn btn-outline-primary"
+              class="btn btn-outline-primary" [disabled] = "!searchForm.valid"
               type="submit"
             >
               Search 
             </button>
           </div>
+          <div class="invalid-data" *ngIf="errorOccured">No data available!!!</div>
     </form>
   </div>
-  <div class="row results" *ngIf="weatherData">
+  <div class="row results" *ngIf="cityArray.length > 0">
     <div class="col-3 list p-2">
-        <div class="card" *ngFor="let city of cityArray; let i = index">
+        <div class="card" *ngFor="let item of cityArray; let i = index">
             <div class="card-body city-list">
-              <a href="#" class="card-link">{{city}}</a>
-              <img src="assets/images/trash.svg" class="trash-icon" (click)="removeCity(city)" />
+              <span tabIndex="0" role="button" class="city-link" (click)="getSelectedCityWeather(item)" (keyup)="getSelectedCityWeather(item)">{{item.key}}</span>
+              <img src="assets/images/trash.svg" alt="remove" class="trash-icon" (click)="removeCity(item.key, 'remove')" (keyup)="getSelectedCityWeather(item)" />
             </div>
           </div>
     </div>
     <div class="col-9 content">
-
       <div class="card text-white bg-primary m-4 main-block">
         <div class="card-header text-center">
           <h2>{{weatherData.name}}</h2>

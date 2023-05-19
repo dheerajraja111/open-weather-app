@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { catchError, tap, throwError } from 'rxjs';
+import { catchError, Subject, takeUntil, tap, throwError } from 'rxjs';
 import { WeatherData } from '../shared/interfaces/weatherData.interface';
+import { LoggerService } from '../shared/services/logger.service';
 import { WeatherService } from '../shared/services/weather.service';
 
 @Component({
@@ -9,17 +10,17 @@ import { WeatherService } from '../shared/services/weather.service';
   templateUrl: './weather.component.html',
   styleUrls: ['./weather.component.scss']
 })
-export class WeatherComponent implements OnInit {
+export class WeatherComponent implements OnInit, OnDestroy {
 
-  iconUrl: string = 'https://openweathermap.org/img/wn/10d@2x.png';
   searchForm!: FormGroup;
   city!: string;
   weatherData!: WeatherData;
-  cityArray: Array<string> = [];
-  errorMessage!: string;
-  submitted = false;
+  cityArray: any = [];
+  errorOccured = false;
+  
+  unsubscribe: Subject<boolean> = new Subject<boolean>();
 
-  constructor(private weatherService: WeatherService, private fb: FormBuilder) {
+  constructor(private weatherService: WeatherService, private fb: FormBuilder, private loggerService: LoggerService) {
 
   }
 
@@ -31,18 +32,22 @@ export class WeatherComponent implements OnInit {
 
   get f() { return this.searchForm.controls; }
 
-  getWeatherData(city: string) {
+  getWeatherData(city: string, action?: string) {
     this.weatherService.getWeatherData(city).pipe(
-      tap((data) => console.log('tap data',data)),
+      tap((data) => this.loggerService.info('fetching data', data)),
+      takeUntil(this.unsubscribe),
       catchError((error) => {
         return throwError(() => {
-          console.log('Error found', error);
-          this.errorMessage = 'Invalid data';
+          this.loggerService.error('error occured', error);
+          this.errorOccured = true;
         })
       })
     ).subscribe((response: WeatherData) => {
       this.weatherData = response;
-      console.log('weatherData: ', response)
+      this.errorOccured = false;
+      if(!action) {
+        this.addToList(this.city, this.weatherData);
+      }
     })
   }
 
@@ -50,21 +55,36 @@ export class WeatherComponent implements OnInit {
     if(this.searchForm.valid) {
       this.city = this.searchForm.get('city')?.value;
       this.getWeatherData(this.city);
-      this.addToList(this.city);
+      this.searchForm.reset();
     } else {
       return;
     }
   }
 
-  addToList(city: string) {
-    this.cityArray.push(city);
+  addToList(city: string, weatherDetails: WeatherData) {
+    this.cityArray.push({key: city, weatherDetails});
   }
 
-  removeCity(city: string) {
-    const index = (this.cityArray).indexOf(city);
+  removeCity(city: string, action: string) {
+    const index = (this.cityArray).findIndex((el: any) => {
+      return el.key === city;
+    });
     (this.cityArray).splice(index, 1);
-    const length = this.cityArray.length;
-    this.getWeatherData(this.cityArray[length - 1]);
+    if (index !== 0) {
+      this.getWeatherData(this.cityArray[index - 1].key, action);
+      this.errorOccured = false;
+    } else {
+      this.errorOccured = true;
+    }
+  }
+
+  getSelectedCityWeather(selectedCityObj: any) {
+    this.weatherData = selectedCityObj.weatherDetails;
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe.next(true);
+    this.unsubscribe.complete();
   }
 
 
