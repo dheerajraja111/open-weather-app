@@ -12,7 +12,7 @@ import { WeatherService } from '../shared/services/weather.service';
 })
 export class WeatherComponent implements OnInit, OnDestroy {
 
-  searchForm!: FormGroup;
+  searchForm!: FormGroup; 
   city!: string;
   weatherData!: WeatherData;
   cityArray: any = [];
