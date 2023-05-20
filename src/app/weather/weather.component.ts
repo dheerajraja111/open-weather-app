@@ -25,9 +25,13 @@ export class WeatherComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.createForm();
+  }
+
+  createForm() {
     this.searchForm = this.fb.group({
       city: ['', Validators.required]
-    })
+    });
   }
 
   get f() { return this.searchForm.controls; }
