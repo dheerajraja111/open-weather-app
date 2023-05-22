@@ -1,7 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { of, Subject, throwError } from 'rxjs';
 import { WeatherData } from '../shared/interfaces/weatherData.interface';
 import { LoggerService } from '../shared/services/logger.service';
 import { WeatherService } from '../shared/services/weather.service';

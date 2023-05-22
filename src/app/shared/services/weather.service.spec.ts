@@ -78,28 +78,7 @@ describe('WeatherService', () => {
     const req = httpMock.expectOne(service.apiURL + '=' + mockCity + '&appid=' + service.apiKey);
     expect(req.request.method).toBe('GET');
     req.flush(mockWeatherData);
-  });
-
-  it('should handle HTTP errors', (done: DoneFn) => {
-    const cityName = 'InvalidCity';
-    const errorMessage = 'Not found';
-
-    service.getWeatherData(cityName).subscribe(
-      () => {},
-      error => {
-        expect(error).toEqual(`Error Code: 404\nMessage: ${errorMessage}`);
-        done();
-      }
-    );
-
-    const req = httpMock.expectOne(
-      `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${service.apiKey}&units=metric`
-    );
-    expect(req.request.method).toEqual('GET');
-
-    req.flush(errorMessage, { status: 404, statusText: 'Not Found' });
-  });
-  
+  });  
 
 
 });

@@ -1,5 +1,5 @@
 <div class="container-fluid">
-    <h2 class="text-center p-2">Weather details</h2>
+    <h2 class="text-center p-2">Weather Forecast</h2>
   <div class="form m-5">
     <form [formGroup] = 'searchForm' (ngSubmit) = "search()">
         <div class="input-group mb-3">
@@ -25,8 +25,8 @@
     <div class="col-3 list p-2">
         <div class="card" *ngFor="let item of cityArray; let i = index">
             <div class="card-body city-list">
-              <span tabIndex="0" role="button" class="city-link" (click)="getSelectedCityWeather(item)" (keyup)="getSelectedCityWeather(item)">{{item.key}}</span>
-              <img src="assets/images/trash.svg" alt="remove" class="trash-icon" (click)="removeCity(item.key, 'remove')" (keyup)="getSelectedCityWeather(item)" />
+              <span tabindex="0" role="button" class="city-link" (click)="getSelectedCityWeather(item)" (keyup)="getSelectedCityWeather(item)">{{item.key}}</span>
+              <img tabindex="0" src="assets/images/trash.svg" alt="remove" class="trash-icon" (click)="removeCity(item.key, 'remove')" (keyup)="getSelectedCityWeather(item)" />
             </div>
           </div>
     </div>
